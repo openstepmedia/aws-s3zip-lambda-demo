@@ -9,7 +9,7 @@ const WebSocket = require('ws')
 test('onzip.ws', async (assert) => {
   // find this in AWS console: https://console.aws.amazon.com/apigateway/home
   // get the apiID and apiStage from the api gateway console
-  const apiID = 'api-id-here'
+  const apiID = 'o9j2e49eig'
   const apiStage = 'demo'
 
   const params = {

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        name="viewport">
+  <title>Demo S3 Zip with Lambda and Websocket</title>
+  <meta content=""
+        name="description">
+  <meta content=""
+        name="author"><!-- Favicon -->
+  <link href=""
+        rel="icon"><!-- Bootstrap 4 -->
+  <link crossorigin="anonymous"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        rel="stylesheet"><!-- Font Awesome -->
+  <link crossorigin="anonymous"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        rel="stylesheet">
+  <style>
+
+    .content {
+      margin-top: 50px;
+    }
+
+  .bd-example {
+    padding: 1.5rem;
+    margin-right: 0;
+    margin-left: 0;
+    border-width: .2rem;
+    border: solid #f7f7f9;
+    margin-top:1rem;
+  }
+
+  #console {
+
+    text-align: left;
+  }
+
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <a class="navbar-brand"
+         href="https://www.trxchange.com">S3 Zip Demo</a>
+  </nav>
+  <div class="content">
+    <div class="container">
+      <div class="starter-template text-center py-5 px-3">
+        <h1>AWS S3 Zip Demo using API WebSocket</h1>
+        <div>
+          <button class="btn btn-primary"
+               id="onzip">Start</button>
+        </div>
+        <div class="bd-example">
+          <pre id="console">Console:</pre>
+        </div>
+      </div>
+    </div>
+  </div><!-- jQuery -->
+  <script crossorigin="anonymous"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script> <!-- Tether -->
+   
+  <script crossorigin="anonymous"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script> <!-- Bootstrap 4 -->
+   
+  <script crossorigin="anonymous"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script> 
+  <script type='text/javascript'>
+
+    var timestamp = Math.round(new Date().getTime()/1000)
+    var params = {
+      region: 'us-east-1',
+      bucket: 's3zipdemo',
+      folder: 'audio/',
+      files: [
+        'file1.mp3',
+        'file2.mp3'
+      ],
+      zipBucket: 's3zipdemo',
+      zipFolder: 'zipfiles/',
+      zipFileName: 'audiofiles2.zip',
+      signedUrlExpireSeconds: 60 * 60 * 10
+    }
+
+    var apiID = 'api-id-here'
+    var apiStage = 'demo'
+    var url = 'wss://' + apiID + '.execute-api.us-east-1.amazonaws.com/' + apiStage
+
+    $('#onzip').click(function () {
+      var wss = new WebSocket(url)
+
+      wss.onopen = function () {
+        console.log('connecting...')
+        log('connecting...')
+        var action = {action:'onzip', params:params}
+        var body = JSON.stringify(action)
+        console.log(body)
+        log('send:', action)
+        wss.send(body)
+      }
+
+      wss.onerror = function (err) {
+        console.log('onerror:', err)
+        log('onerror:', err)
+      }
+
+      wss.onmessage = function(event) {
+        var eventJson = JSON.parse(event.data)
+        console.log('eventJson:', eventJson)
+        log('eventJson:', eventJson)
+
+        if (eventJson.statusCode === 'success') {
+          var url = '<a href="' + eventJson.SignedUrl +'">Download<\/a>'
+          log('Finished! ' + url)
+        }
+      }
+    })
+
+    function log (msg, obj) {
+      var s = $('#console').text()
+      if (obj) {
+        msg += ' ' + JSON.stringify(obj, null, 2)
+      }
+      $('#console').text(s + '\n' + msg)
+    }
+  </script>
+</body>
+</html>

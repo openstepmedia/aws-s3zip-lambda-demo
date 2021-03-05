@@ -1,0 +1,23 @@
+{
+  "name": "aws-s3zip-lambda-demo",
+  "version": "1.0.0",
+  "description": "Demo showing s3 zipping using lambda functions with AWS Api Websockets deployed with cloudformation",
+  "main": "index.js",
+  "config": {
+    "DevTemplate": "template.dev.yaml",
+    "DevRegion": "us-east-1",
+    "DevStackName": "DemoDevS3ZipStack",
+    "DevS3Prefix": "code",
+    "DevS3Bucket": "s3zipdemo"
+  },
+  "scripts": {
+    "build:dev": "cross-var sam build --region $npm_package_config_DevRegion -t template.dev.yaml && cross-var sam package -t template.dev.yaml --s3-bucket $npm_package_config_DevS3Bucket --s3-prefix $npm_package_config_DevS3Prefix --output-template-file packaged.dev.yaml --region $npm_package_config_DevRegion",
+    "deploy:dev": "cross-var sam deploy --region $npm_package_config_DevRegion --template-file packaged.dev.yaml --stack-name $npm_package_config_DevStackName --capabilities CAPABILITY_IAM ",
+    "describe:dev": "cross-var aws cloudformation describe-stacks --region $npm_package_config_DevRegion --stack-name $npm_package_config_DevStackName --query 'Stacks[].Outputs'"
+  },
+  "author": {
+    "name": "Seth Markowitz",
+    "email": "seth@openstepmedia.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "unit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "japa": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "ws": "^7.4.3"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "onzip",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for zipping s3 assets",
+  "main": "app.js",
+  "author": "Seth Markowitz",
+  "license": "MIT",
+  "dependencies": {
+    "s3-zip": "^3.2.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.739.0"
+  }
+}
